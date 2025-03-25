@@ -22,17 +22,17 @@ class Bus():
 
 	def adding_passengers(self, parameter_1):
 		if len(self.passengers)<self.max_passengers:             
-			self.passengers.append(parameter_1.name)     
-			print(self.passengers)
+			self.passengers.append(parameter_1)    
+			print(f"{parameter_1.name} got on the bus. The current amount of passengers is:{len(self.passengers)}")
 			return
-		print("This bus is full")
+		print(f"{parameter_1.name} can not get on because this bus is full")
 		
 
 	def getting_passengers_off(self):
 		if len(self.passengers)>=1: 
 			self.random_passenger = random.randint(0, (len(self.passengers)-1))      
 			self.passenger_got_off=self.passengers.pop(self.random_passenger)
-			print(f"{self.passenger_got_off} got off the bus")
+			print(f"{self.passenger_got_off.name} got off the bus")
 		else:
 			print("This bus is already empty")
 
@@ -40,8 +40,8 @@ class Bus():
 
 passenger=Person("John")
 passenger_1=Person("Daniel")
-passenger_2=Person("Marco")
-passenger_3=Person("Maria")
+passenger_2=Person("Ana")
+passenger_3=Person("Marco")
 
 bus_1=Bus(3)
 bus_1.adding_passengers(passenger)

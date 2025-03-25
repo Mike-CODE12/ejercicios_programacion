@@ -11,17 +11,17 @@ class Hand:
 	def __init__(self):
 		pass
 		
-right_hand=Hand()       
-left_hand=Hand()
+right_hand= Hand()       
+left_hand= Hand()
 
 
 class Arm:
-	def __init__(self, right_hand, left_hand):
-		self.right_hand = right_hand
-		self.left_hand = left_hand
+	def __init__(self, hand):
+		self.hand = hand
 
-right_arm=Arm(right_hand, left_hand)
-left_arm=Arm(right_hand, left_hand)
+
+right_arm=Arm(right_hand)
+left_arm=Arm(left_hand)
 
 
 class Feet:
@@ -31,16 +31,13 @@ class Feet:
 right_foot = Feet()
 left_foot = Feet()
 
-feet=Feet()
-
 
 class Leg: 
-	def __init__(self, right_foot, left_foot):
-		self.right_foot = right_foot
-		self.left_foot = left_foot
+	def __init__(self, foot):
+		self.foot = foot
 
-right_leg=Leg(right_foot, left_foot)
-left_leg=Leg(right_foot, left_foot)
+right_leg=Leg(right_foot)
+left_leg=Leg(left_foot)
 
 
 class Head:

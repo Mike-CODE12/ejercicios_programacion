@@ -1,0 +1,2 @@
+hotel = {"name" : "Magic", "number_of_stars" : 5, "rooms" : [{"number" : 1, "floor" : 1, "price_per_night" : 15000}, {"number" : 2, "floor" : 1, "price_per_night" : 15000} , {"number" : 3, "floor" : 2, "price_per_night" : 20000}, {"number" : 4, "floor" : 2, "price_per_night" : 20000}, {"number" : 5, "floor" : 2, "price_per_night" : 15000}, {"number" : 6, "floor" : 3, "price_per_night" : 25000}, {"number" : 7, "floor" : 3, "price_per_night" : 25000}, {"number" : 8, "floor" : 3, "price_per_night" : 28000}]}
+print(hotel.get("rooms")[6].get("number"))

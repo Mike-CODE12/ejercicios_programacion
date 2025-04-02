@@ -33,16 +33,18 @@ print(first_account.balance)
 class SavingsAccount(BankAccount):
 
 
-    def __init__(self, balance, min_balance, withdrawal):
+    def __init__(self, balance, min_balance):
         super().__init__(balance)   
         self.min_balance= min_balance
+
+    def withdrawal_approval_check(self, withdrawal):
         try:
             if self.balance-withdrawal<self.min_balance:        
                 raise ValueError("The account's current balance is below the minimum required") 
         except ValueError as ex:
-            print(f"{ex}: Due to this, we cannot to process the requested withdrawal")
-        else:
-            super().withdraw_money(withdrawal) 
+            print(f"{ex}: Due to this, we cannot to process the requested withdrawal and the balance has not been changed")
+            return self.balance
+        return  self.withdraw_money(withdrawal)
 
-second_account=SavingsAccount(50000, 2000, 47000)
-print(second_account.balance)
+second_account=SavingsAccount(50000, 2000)
+print(second_account.withdrawal_approval_check(49000))

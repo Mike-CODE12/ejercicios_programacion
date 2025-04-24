@@ -8,7 +8,7 @@ def parameter_checker(function):
             try:             
                 if type(index) != int:    
                     if type(index) != float:
-                        raise ValueError("This parameter is not a number")
+                        raise ValueError("A parameter is not a number")
             except ValueError as ex:
                 print(ex)
                 exit()
@@ -16,7 +16,7 @@ def parameter_checker(function):
             try:             
                 if type(value) != int:
                     if type(value) != float:
-                        raise ValueError("This parameter is not a number")
+                        raise ValueError("A parameter is not a number")
             except ValueError as error:
                 print(error)
                 exit()

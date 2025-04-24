@@ -1,0 +1,47 @@
+close()
+Cierra el archivo. Es importante cerrar el archivo después de trabajar con él para liberar los recursos del sistema.
+
+detach()
+Devuelve el flujo de datos crudo separado del buffer, lo que permite acceder a la secuencia de bytes subyacente directamente.
+
+fileno()
+Retorna un int que representa el identificador del archivo desde la perspectiva del sistema operativo. Es útil para interacciones a bajo nivel.
+
+flush()
+Limpia el buffer interno, forzando la escritura de cualquier dato pendiente en el archivo. No cierra el archivo, solo asegura que se guarden los datos.
+
+isatty()
+Retorna True si el archivo es de terminal interactivo (es decir, si está asociado con una consola o terminal), y False en caso contrario.
+
+read()
+Lee y retorna todo el contenido del archivo como un string. Se debe usar con cuidado si el archivo es muy grande.
+
+readable()
+Retorna True si el archivo se puede leer, es decir, si está abierto en modo de lectura, y False si no.
+
+readline()
+Lee una sola línea del archivo, incluyendo el carácter de salto de línea al final. Es útil para leer archivo línea por línea.
+
+readlines()
+Lee todo el contenido del archivo y lo retorna como una lista, donde cada elemento es una línea del archivo.
+
+seek()
+Cambia la posición actual en el archivo. Se usa para mover el puntero a una posición específica dentro del archivo.
+
+seekable()
+Retorna True si el archivo permite cambiar la posición actual (por ejemplo, si se puede usar  seek()), y False si no.
+
+tell()
+Retorna la posición actual del puntero en el archivo, es decir, el número de bytes desde el inicio del archivo.
+
+truncate()
+Redimensiona el archivo a un tamaño especificado. Si el archivo es más grande que el tamaño especificado, se recorta.
+
+writable()
+Retorna True si el archivo es escribible, es decir, si se abrió en modo de escritura, y False en caso contrario.
+
+write()
+Escribe una string o datos en el archivo. Si el archivo está abierto en modo de escritura, los datos se agregan al archivo.
+
+writelines()
+Escribe una lista de strings en el archivo. Cada elemento de la lista se escribe de forma consecutiva.

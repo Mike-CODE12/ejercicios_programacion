@@ -1,0 +1,8 @@
+print("hello world")
+print("terminando semana 3")
+print("ejercicios en python")
+print("resultados de operaciones matemÃ¡ticas bÃ¡sicas")
+print(180/4)
+print(90*8)
+print(120+356)
+print(9568-4561)

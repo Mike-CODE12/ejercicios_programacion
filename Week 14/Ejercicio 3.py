@@ -17,9 +17,16 @@ class BinaryTree:
     def __init__(self, root):
         self.root = root
 
-    def print_structure(self, node):
 
-        if node is not None:
-            print(node.data)
-            self.print_structure(node.left)   
-            self.print_structure(node.right)   
+    def print_structure(self):
+        if self.root is None:
+            print("Cannot print from empty BinaryTree")
+            return
+        self.print_node(self.root, 0)
+
+    def print_node(self, node, level):
+        if node is None:
+            return
+        print('  ' * level + node.data)
+        self.print_node(node.left, level + 1)
+        self.print_node(node.right, level + 1)

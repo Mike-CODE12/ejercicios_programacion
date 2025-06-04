@@ -3,6 +3,7 @@
 #     2. Debe incluir un método para hacer `print` de toda la estructura.
 #     3. No se permite el uso de tipos de datos compuestos como `lists`, `dicts` o `tuples` ni módulos como `collections`.
 
+
 class Node:
     data: str
     next: "Node"
@@ -18,7 +19,11 @@ class Stack:
     def __init__(self, top):
         self.top = top
 
+
     def print_structure(self):
+        if not self.top:
+            print("Cannot print from empty stack")
+            return
         current_node = self.top
         while (current_node is not None):
             print(current_node.data)
@@ -30,6 +35,10 @@ class Stack:
 
 
     def pop(self):
+        if not self.top:
+            print("Cannot pop from empty stack")
+            return
         if self.top:
+            removed = self.top.data
             self.top = self.top.next
-
+            return removed

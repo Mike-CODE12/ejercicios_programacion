@@ -1,0 +1,21 @@
+1. Cree un algoritmo para ver un video en Youtube. Sea lo más específico posible.
+
+Ver un video en Youtube
+    1 Inicio
+    2 Si Google Chrome está instalado:     
+    • Abre Google Chrome
+    3 Sino, si tiene Microsoft Edge: 
+    • Abre Microsoft Edge  
+    4 Sino:
+    • Descarga un navegador web
+    5 Ingresa a www.youtube.com        
+    6 Busca un video relacionado a la programación en 2025
+    • Dirígete al buscador de YouTube
+    • Escribe “Programación en 2025”
+    • Presiona Enter
+    7 Si el primer video tiene una antigüedad de 8 días o menor:
+    • Selecciona el primer video                  
+    8 Sino:
+    • Selecciona el primer video que te aparezca con una antigüedad menor a 9 días
+    9 Reproduce el video
+    10 Fin                   

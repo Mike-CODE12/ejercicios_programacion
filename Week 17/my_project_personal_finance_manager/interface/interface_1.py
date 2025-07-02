@@ -113,6 +113,11 @@ def run_interface():
                     else:
                         try:
                             amount = float(amount_str)
+
+                            if amount < 0:
+                                sg.popup_error("Amount must be a positive number or zero number.")
+                                continue
+
                             movement_type = movement_window.Title.split(" ")[1]  
                             manager.add_movement(movement_type, title, amount, category)
                             update_table_and_balance(main_window, manager)

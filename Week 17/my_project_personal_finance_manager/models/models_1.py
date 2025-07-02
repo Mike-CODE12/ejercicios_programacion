@@ -18,14 +18,15 @@ class FinanceManager:
         self.movements = []
 
     def add_category(self, name):
+        normalized_name = name.strip().lower() 
         already_present = False
         for reviewer in self.categories:
-            if reviewer.name == name:
+            if reviewer.name.lower() == normalized_name:
                 already_present = True
                 print("That category is already present")
                 break
         if not already_present:
-            self.categories.append(Category(name))
+            self.categories.append(Category(name.strip()))
             print("New category was added")
 
 

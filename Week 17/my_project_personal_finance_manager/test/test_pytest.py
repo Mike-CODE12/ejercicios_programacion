@@ -55,4 +55,4 @@ def test_add_category_in_a_sensitive_check_case():
     manager = FinanceManager()
     manager.add_category("Health")
     manager.add_category("health")  
-    assert len(manager.categories) == 2
+    assert len(manager.categories) == 1

@@ -1,0 +1,94 @@
+import json
+from flask import Flask, request, jsonify
+import os
+
+app = Flask(__name__)
+
+TASKS_FILE = 'tasks.json'
+
+if not os.path.exists(TASKS_FILE):
+    with open(TASKS_FILE, 'w') as file:
+        json.dump([], file)
+
+def read_tasks():
+    with open(TASKS_FILE, 'r') as file:
+        return json.load(file)
+
+def write_tasks(tasks):
+    with open(TASKS_FILE, 'w') as file:
+        json.dump(tasks, file, indent=4)
+
+@app.route('/tasks', methods=['GET'])
+def get_tasks():
+    tasks = read_tasks()
+    status = request.args.get('status')
+    if status:
+        filtered_tasks = [task for task in tasks if task.get('status') == status]
+        return jsonify(filtered_tasks)
+    return jsonify(tasks)
+
+@app.route('/tasks', methods=['POST'])
+def create_task():
+    new_task = request.get_json()
+    tasks = read_tasks()
+
+    if not new_task.get('id'):
+        return jsonify({"error": "ID is required"}), 400
+    if not new_task.get('title'):
+        return jsonify({"error": "Title is required"}), 400
+    if not new_task.get('description'):
+        return jsonify({"error": "Description is required"}), 400
+    if not new_task.get('status'):
+        return jsonify({"error": "Status is required"}), 400
+    if new_task['status'] not in ['To Do', 'In Progress', 'Completed']:
+        return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
+    if any(t['id'] == new_task.get('id') for t in tasks):
+        return jsonify({"error": "Task with this ID already exists"}), 400
+
+    tasks.append(new_task)
+    write_tasks(tasks)
+    return jsonify(new_task), 201
+
+@app.route('/tasks/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    tasks = read_tasks()
+    task_to_update = None
+    for task in tasks:
+        if task['id'] == task_id:
+            task_to_update = task
+            break
+
+    if not task_to_update:
+        return jsonify({"error": "Task not found"}), 404
+
+    update_data = request.get_json()
+
+    if 'title' in update_data and not update_data['title']:
+        return jsonify({"error": "Title cannot be empty"}), 400
+    if 'description' in update_data and not update_data['description']:
+        return jsonify({"error": "Description cannot be empty"}), 400
+    if 'status' in update_data and update_data['status'] not in ['To Do', 'In Progress', 'Completed']:
+        return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
+
+    task_to_update.update(update_data)
+    write_tasks(tasks)
+    return jsonify(task_to_update)
+
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    tasks = read_tasks()
+    task_index = None
+    for index, task in enumerate(tasks):
+        if task['id'] == task_id:
+            task_index = index
+            break
+
+    if task_index is None:
+        return jsonify({"error": "Task not found"}), 404
+
+    deleted_task = tasks.pop(task_index)
+    write_tasks(tasks)
+    return jsonify(deleted_task)
+
+if __name__ == '__main__':
+    app.run(debug=True)

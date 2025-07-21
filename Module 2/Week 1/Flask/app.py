@@ -2,6 +2,10 @@ import json
 from flask import Flask, request, jsonify
 import os
 
+
+class DataSourceError(Exception):
+    pass
+
 app = Flask(__name__)
 
 TASKS_FILE = 'tasks.json'
@@ -11,12 +15,26 @@ if not os.path.exists(TASKS_FILE):
         json.dump([], file)
 
 def read_tasks():
-    with open(TASKS_FILE, 'r') as file:
-        return json.load(file)
+    try:
+        with open(TASKS_FILE, 'r') as file:
+            content = file.read()
+            if not content:
+                return []
+            return json.loads(content)
+    except (IOError, json.JSONDecodeError) as ex:
+        raise DataSourceError(f"Error reading from data source: {ex}")
 
 def write_tasks(tasks):
-    with open(TASKS_FILE, 'w') as file:
-        json.dump(tasks, file, indent=4)
+    try:
+        with open(TASKS_FILE, 'w') as file:
+            json.dump(tasks, file, indent=4)
+    except IOError as ex:
+        raise DataSourceError(f"Error writing to data source: {ex}")
+
+@app.errorhandler(DataSourceError)
+def handle_data_source_error(error):
+    """Returns a 500 Internal Server Error for any data source issues."""
+    return jsonify({"error": "A server-side error occurred. Please try again later."}), 500
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
@@ -30,10 +48,11 @@ def get_tasks():
 @app.route('/tasks', methods=['POST'])
 def create_task():
     new_task = request.get_json()
-    tasks = read_tasks()
+    
+    task_id = new_task.get('id')
+    if not isinstance(task_id, int):
+        return jsonify({"error": "ID is required and must be an integer"}), 400
 
-    if not new_task.get('id'):
-        return jsonify({"error": "ID is required"}), 400
     if not new_task.get('title'):
         return jsonify({"error": "Title is required"}), 400
     if not new_task.get('description'):
@@ -42,7 +61,9 @@ def create_task():
         return jsonify({"error": "Status is required"}), 400
     if new_task['status'] not in ['To Do', 'In Progress', 'Completed']:
         return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
-    if any(t['id'] == new_task.get('id') for t in tasks):
+
+    tasks = read_tasks()
+    if any(t['id'] == task_id for t in tasks):
         return jsonify({"error": "Task with this ID already exists"}), 400
 
     tasks.append(new_task)
@@ -51,6 +72,18 @@ def create_task():
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
+    update_data = request.get_json()
+
+    if 'id' in update_data:
+        return jsonify({"error": "Task ID cannot be changed"}), 400
+
+    if 'title' in update_data and not update_data['title']:
+        return jsonify({"error": "Title cannot be empty"}), 400
+    if 'description' in update_data and not update_data['description']:
+        return jsonify({"error": "Description cannot be empty"}), 400
+    if 'status' in update_data and update_data['status'] not in ['To Do', 'In Progress', 'Completed']:
+        return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
+
     tasks = read_tasks()
     task_to_update = None
     for task in tasks:
@@ -60,15 +93,6 @@ def update_task(task_id):
 
     if not task_to_update:
         return jsonify({"error": "Task not found"}), 404
-
-    update_data = request.get_json()
-
-    if 'title' in update_data and not update_data['title']:
-        return jsonify({"error": "Title cannot be empty"}), 400
-    if 'description' in update_data and not update_data['description']:
-        return jsonify({"error": "Description cannot be empty"}), 400
-    if 'status' in update_data and update_data['status'] not in ['To Do', 'In Progress', 'Completed']:
-        return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
 
     task_to_update.update(update_data)
     write_tasks(tasks)

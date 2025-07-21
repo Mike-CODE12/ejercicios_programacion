@@ -18,9 +18,6 @@ class FinanceManager:
         self.movements = []
 
     def add_category(self, name):
-        if not name or not name.strip():
-            print("Category name cannot be empty.")
-            return False
         normalized_name = name.strip().lower() 
         already_present = False
         for reviewer in self.categories:

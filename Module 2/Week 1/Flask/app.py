@@ -3,9 +3,6 @@ from flask import Flask, request, jsonify
 import os
 
 
-class DataSourceError(Exception):
-    pass
-
 app = Flask(__name__)
 
 TASKS_FILE = 'tasks.json'
@@ -21,24 +18,34 @@ def read_tasks():
             if not content:
                 return []
             return json.loads(content)
-    except (IOError, json.JSONDecodeError) as ex:
-        raise DataSourceError(f"Error reading from data source: {ex}")
+    except IOError as e:
+        if "No such file" in str(e):
+            return jsonify({"error": "Tasks file not found"}), 404
+        elif "Permission denied" in str(e):
+            return jsonify({"error": "Permission denied while reading tasks"}), 503
+        else:
+            return jsonify({"error": "Error accessing the tasks file"}), 503
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON format in the tasks file"}), 422
 
 def write_tasks(tasks):
     try:
         with open(TASKS_FILE, 'w') as file:
             json.dump(tasks, file, indent=4)
     except IOError as ex:
-        raise DataSourceError(f"Error writing to data source: {ex}")
+        if "No space" in str(ex):
+            return jsonify({"error": "Insufficient storage space to save tasks"}), 507
+        elif "Permission denied" in str(ex):
+            return jsonify({"error": "Permission denied while writing tasks"}), 503
+        else:
+            return jsonify({"error": "Error saving tasks to the file"}), 503
 
-@app.errorhandler(DataSourceError)
-def handle_data_source_error(error):
-    """Returns a 500 Internal Server Error for any data source issues."""
-    return jsonify({"error": "A server-side error occurred. Please try again later."}), 500
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = read_tasks()
+    if isinstance(tasks, tuple):  
+        return tasks  
     status = request.args.get('status')
     if status:
         filtered_tasks = [task for task in tasks if task.get('status') == status]
@@ -63,11 +70,15 @@ def create_task():
         return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
 
     tasks = read_tasks()
+    if isinstance(tasks, tuple):
+        return tasks
     if any(t['id'] == task_id for t in tasks):
         return jsonify({"error": "Task with this ID already exists"}), 400
 
     tasks.append(new_task)
-    write_tasks(tasks)
+    write_result = write_tasks(tasks)  
+    if isinstance(write_result, tuple):  
+        return write_result
     return jsonify(new_task), 201
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
@@ -85,6 +96,8 @@ def update_task(task_id):
         return jsonify({"error": "Invalid status. Must be one of: To Do, In Progress, Completed"}), 400
 
     tasks = read_tasks()
+    if isinstance(tasks, tuple):  
+        return tasks 
     task_to_update = None
     for task in tasks:
         if task['id'] == task_id:
@@ -95,12 +108,16 @@ def update_task(task_id):
         return jsonify({"error": "Task not found"}), 404
 
     task_to_update.update(update_data)
-    write_tasks(tasks)
+    write_result = write_tasks(tasks)  
+    if isinstance(write_result, tuple): 
+        return write_result 
     return jsonify(task_to_update)
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     tasks = read_tasks()
+    if isinstance(tasks, tuple):  
+        return tasks 
     task_index = None
     for index, task in enumerate(tasks):
         if task['id'] == task_id:
@@ -111,7 +128,9 @@ def delete_task(task_id):
         return jsonify({"error": "Task not found"}), 404
 
     deleted_task = tasks.pop(task_index)
-    write_tasks(tasks)
+    write_result = write_tasks(tasks)  
+    if isinstance(write_result, tuple):  
+        return write_result 
     return jsonify(deleted_task)
 
 if __name__ == '__main__':

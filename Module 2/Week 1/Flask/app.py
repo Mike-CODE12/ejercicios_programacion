@@ -18,15 +18,18 @@ def read_tasks():
             if not content:
                 return []
             return json.loads(content)
-    except IOError as e:
-        if "No such file" in str(e):
-            return jsonify({"error": "Tasks file not found"}), 404
-        elif "Permission denied" in str(e):
-            return jsonify({"error": "Permission denied while reading tasks"}), 503
+    except IOError as ex:
+        if "No such file" in str(ex):
+            print("error: Tasks file not found, 404")
+            return jsonify({"error": "Error reading tasks from file"}), 404
+        elif "Permission denied" in str(ex):
+            print("error: Permission denied while reading tasks, 503")
         else:
-            return jsonify({"error": "Error accessing the tasks file"}), 503
+            print("error: Error accessing the tasks file, 503")
+        return jsonify({"error": "Error reading tasks from file"}), 500
     except json.JSONDecodeError:
-        return jsonify({"error": "Invalid JSON format in the tasks file"}), 422
+        print("error: Invalid JSON format in the tasks file, 422")
+        return jsonify({"error": "Error processing task data"}), 400
 
 def write_tasks(tasks):
     try:
@@ -34,11 +37,12 @@ def write_tasks(tasks):
             json.dump(tasks, file, indent=4)
     except IOError as ex:
         if "No space" in str(ex):
-            return jsonify({"error": "Insufficient storage space to save tasks"}), 507
+            print("error: Insufficient storage space to save tasks, 507")
         elif "Permission denied" in str(ex):
-            return jsonify({"error": "Permission denied while writing tasks"}), 503
+            print("error: Permission denied while writing tasks, 503")
         else:
-            return jsonify({"error": "Error saving tasks to the file"}), 503
+            print("error: Error saving tasks to the file, 503")
+        return jsonify({"error": "Error saving tasks to the file"}), 500
 
 
 @app.route('/tasks', methods=['GET'])

@@ -1,0 +1,6 @@
+Debido al siguiente error que me apareció en VS Code, el cual me impedía abrir e iniciar el archivo:
+Failed to open database 'c:\Users\RYZEN\Desktop\Ejercicio SQL\ejercicio.db': Parse error near line 4: no such column: "table" - should this be a string literal in single-quotes?
+aster
+WHERE (type="table" OR type="view") error here ---^
+
+Tuve que utilizar el programa "DB Browser for SQLite" para conectarme a la base de datos y ejecutar.

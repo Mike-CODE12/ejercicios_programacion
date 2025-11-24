@@ -1,6 +1,6 @@
 CREATE TABLE Products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    code CHAR(6) UNIQUE NOT NULL,
+    code CHAR(7) UNIQUE NOT NULL,
     name VARCHAR(80) NOT NULL,
     price INTEGER NOT NULL,
     entry_date TIMESTAMP  NOT NULL,           
@@ -15,7 +15,7 @@ CREATE TABLE Reviews (
 );
 CREATE TABLE Users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username VARCHAR(25) UNIQUE NOT NULL ,
+    username VARCHAR(27) UNIQUE NOT NULL ,
     email VARCHAR(25) UNIQUE NOT NULL,
     registration_date TIMESTAMP NOT NULL
 );
@@ -29,8 +29,6 @@ CREATE TABLE Invoices (
     invoice_number CHAR(6) UNIQUE NOT NULL,
     purchase_date TIMESTAMP NOT NULL,
     total_amount INTEGER NOT NULL,
-    buyer_phone CHAR(8) NOT NULL,
-    cashier_employee_code CHAR(5) NOT NULL,
     user_id INTEGER NOT NULL REFERENCES Users(id),
     payment_method_id INTEGER NOT NULL REFERENCES PaymentMethod(id)
 );
@@ -43,7 +41,7 @@ CREATE TABLE InvoiceDetails (
 );
 CREATE TABLE CartEmail (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email VARCHAR(25) UNIQUE NOT NULL
+    email VARCHAR(27) UNIQUE NOT NULL
 );
 CREATE TABLE ShoppingCart (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,3 +49,9 @@ CREATE TABLE ShoppingCart (
     product_id INTEGER NOT NULL REFERENCES Products(id),
     quantity SMALLINT NOT NULL CHECK (quantity > 0)
 );
+
+ALTER TABLE Invoices
+ADD COLUMN buyer_phone CHAR(8);
+
+ALTER TABLE Invoices
+ADD COLUMN cashier_employee_code CHAR(5);

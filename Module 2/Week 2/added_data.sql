@@ -22,10 +22,10 @@ INSERT INTO PaymentMethod (id, payment_method, bank_name) VALUES
 (2, 'Sinpe Móvil', 'BAC'),
 (3, 'PayPal', NULL);
 
-INSERT INTO Invoices (id, invoice_number, purchase_date, total_amount, buyer_phone, cashier_employee_code, user_id, payment_method_id) VALUES
-(101, 'INV001', '2023-03-10', 167000, '6945 3125', '54603', 1, 2),
-(102, 'INV002', '2023-03-12', 170000, '8456 9713', '67981', 2, 1),
-(103, 'INV003', '2023-03-15', 15000, '6129 4834', '56813', 3, 3);
+INSERT INTO Invoices (id, invoice_number, purchase_date, total_amount, user_id, payment_method_id) VALUES
+(101, 'INV001', '2023-03-10', 167000, 1, 2),
+(102, 'INV002', '2023-03-12', 170000, 2, 1),
+(103, 'INV003', '2023-03-15', 15000, 3, 3);
 
 INSERT INTO InvoiceDetails (id, invoice_id, product_id, quantity, total_amount) VALUES
 (1, 101, 1, 1, 150000),
@@ -47,3 +47,19 @@ INSERT INTO ShoppingCart (id, cart_id, product_id, quantity) VALUES
 (4, 2, 4, 2),
 (5, 3, 3, 1),
 (6, 3, 5, 1);
+
+
+UPDATE Invoices
+SET buyer_phone = '69453125',
+    cashier_employee_code = '54603'
+WHERE id = 101;
+
+UPDATE Invoices
+SET buyer_phone = '84569713',
+    cashier_employee_code = '67981'
+WHERE id = 102;
+
+UPDATE Invoices
+SET buyer_phone = '61294834',
+    cashier_employee_code = '56813'
+WHERE id = 103;

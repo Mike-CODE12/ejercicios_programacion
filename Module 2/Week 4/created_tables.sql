@@ -1,0 +1,25 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE Authors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(45) NOT NULL,
+    author_id INTEGER REFERENCES Authors(id)
+);
+
+CREATE TABLE Customers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(30) NOT NULL,
+    email VARCHAR(27) UNIQUE NOT NULL
+);
+
+CREATE TABLE Rents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_id INTEGER NOT NULL REFERENCES Books(id),
+    customer_id INTEGER NOT NULL REFERENCES Customers(id),
+    state VARCHAR(8) NOT NULL CHECK (state IN ('Returned', 'On time', 'Overdue'))
+);

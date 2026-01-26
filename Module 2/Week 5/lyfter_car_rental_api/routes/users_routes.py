@@ -20,7 +20,6 @@ def build_users_routes(users_controller):
         data = request.get_json(force=True)
         return users_controller.change_user_status(user_id, data)
 
-    # Replaces your delinquency module/table
     @bp.patch("/users/<int:user_id>/overdue")
     def set_overdue(user_id: int):
         data = request.get_json(force=True)
